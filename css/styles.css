@@ -241,7 +241,7 @@
 
     .topbar {
       display: grid;
-      grid-template-columns: 44px minmax(0, 1fr) 44px;
+      grid-template-columns: 44px minmax(0, 1fr) auto;
       align-items: center;
       margin-bottom: clamp(12px, 2.4vw, 20px);
     }
@@ -289,6 +289,88 @@
       place-items: center;
       cursor: pointer;
       justify-self: end;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      justify-self: end;
+    }
+
+    .notify-btn { position: relative; }
+    .notify-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 99px;
+      background: #fff;
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 16px;
+      text-align: center;
+      letter-spacing: 0;
+    }
+    .notify-btn.read .notify-badge { display: none; }
+
+    .notify-sheet {
+      display: flex;
+      flex-direction: column;
+      max-height: min(78dvh, 620px);
+      overflow: hidden;
+    }
+    .notify-sheet h2,
+    .notify-sheet > p { flex-shrink: 0; }
+    .notify-sheet > p { margin-bottom: 8px; }
+    .notify-list {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      margin-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .notify-sheet .ghost {
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+    .notify-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid #f2f2f2;
+    }
+    .notify-item:first-child { border-top: none; padding-top: 8px; }
+    .notify-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d8d8d8;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .notify-item.unread .notify-dot { background: var(--red); }
+    .notify-item strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .notify-item p {
+      margin: 4px 0 0;
+      color: #666;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .notify-item time {
+      display: block;
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 12px;
+      font-weight: 600;
     }
 
     .account-row {
@@ -1113,6 +1195,7 @@
         transform: translateY(18px) scale(0.96);
       }
       .modal.open .sheet { transform: none; }
+      .notify-sheet { max-height: min(72vh, 560px); }
       .actions {
         width: 100%;
         max-width: none;

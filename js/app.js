@@ -245,20 +245,51 @@ function showSigningIn() {
   setTimeout(() => { location.href = "overview.html"; }, reduce ? 450 : 2600);
 }
 
+function injectAlertModal() {
+  if (document.getElementById("alertModal")) return;
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.id = "alertModal";
+  modal.innerHTML = `
+    <div class="sheet fail-sheet">
+      <div class="fail-icon" aria-hidden="true">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" x2="12" y1="8" y2="12"/>
+          <line x1="12" x2="12.01" y1="16" y2="16"/>
+        </svg>
+      </div>
+      <h2 id="alertTitle">Unable to continue</h2>
+      <p id="alertText"></p>
+      <button class="primary" type="button" id="alertClose">OK</button>
+    </div>`;
+  (document.querySelector(".app") || document.body).appendChild(modal);
+  const close = () => modal.classList.remove("open");
+  document.getElementById("alertClose")?.addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("open")) close();
+  });
+}
+
+function showAlert(text, title) {
+  injectAlertModal();
+  const modal = document.getElementById("alertModal");
+  const titleEl = document.getElementById("alertTitle");
+  const textEl = document.getElementById("alertText");
+  if (titleEl) titleEl.textContent = title || "Unable to continue";
+  if (textEl) textEl.textContent = text;
+  modal.classList.remove("open");
+  void modal.offsetWidth;
+  modal.classList.add("open");
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "alertTitle");
+  document.getElementById("alertClose")?.focus();
+}
+
 function showToast(msg) {
-  let el = document.getElementById("toast");
-  if (!el) {
-    el = document.createElement("div");
-    el.className = "toast";
-    el.id = "toast";
-    el.setAttribute("role", "status");
-    el.setAttribute("aria-live", "polite");
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.style.display = "block";
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => { el.style.display = "none"; }, 2400);
+  showAlert(msg);
 }
 
 function goSuccess(title, text) {
@@ -347,7 +378,31 @@ function wireLogout() {
     location.href = "index.html";
   });
   modal?.addEventListener("click", (e) => { if (e.target === modal) close(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal?.classList.contains("open")) close();
+  });
+}
+
+function wireNotify() {
+  const modal = document.getElementById("notifyModal");
+  const btn = document.getElementById("notifyBtn");
+  if (!modal || !btn) return;
+  const open = () => {
+    modal.classList.add("open");
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "notifyTitle");
+    btn.classList.add("read");
+    btn.setAttribute("aria-label", "Notifications");
+    document.getElementById("notifyClose")?.focus();
+  };
+  const close = () => modal.classList.remove("open");
+  btn.addEventListener("click", open);
+  document.getElementById("notifyClose")?.addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("open")) close();
+  });
 }
 
 function wireBalance() {
@@ -437,6 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("refreshClock")?.addEventListener("click", tickClock);
   wireBalance();
   wireLogout();
+  wireNotify();
 
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
@@ -455,10 +511,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const user = document.getElementById("loginUser").value.trim();
       const pass = document.getElementById("loginPass").value;
-      const err = document.getElementById("loginError");
       if (user !== "Corey23923" || pass !== "kohlman2026$") {
-        err.textContent = "The username or password is incorrect.";
-        err.classList.add("show");
+        showAlert("The username or password is incorrect.", "Unable to log on");
         return;
       }
       if (document.getElementById("rememberMe").checked) localStorage.setItem("hsbcUser", user);

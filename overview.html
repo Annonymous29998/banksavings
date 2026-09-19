@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+  <link rel="stylesheet" href="css/styles.css?v=15" />
 </head>
 <body>
   <div class="app">
@@ -26,13 +26,22 @@
             </svg>
             <span>HSBC</span>
           </div>
-          <button class="icon-btn" type="button" id="logoutBtn" aria-label="Sign out">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m16 17 5-5-5-5"/>
-              <path d="M21 12H9"/>
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            </svg>
-          </button>
+          <div class="topbar-actions">
+            <button class="icon-btn notify-btn" type="button" id="notifyBtn" aria-label="Notifications, 3 unread">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+              </svg>
+              <span class="notify-badge" id="notifyBadge">3</span>
+            </button>
+            <button class="icon-btn" type="button" id="logoutBtn" aria-label="Sign out">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m16 17 5-5-5-5"/>
+                <path d="M21 12H9"/>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="account-row">
@@ -163,6 +172,56 @@
       </div>
     </div>
 
+    <div class="modal" id="notifyModal">
+      <div class="sheet notify-sheet">
+        <h2 id="notifyTitle">Notifications</h2>
+        <p>Account activity for Mediterranean Investment Capital Ltd.</p>
+        <div class="notify-list">
+          <article class="notify-item unread">
+            <span class="notify-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Payroll posted</strong>
+              <p>Monthly wages of $52,480.00 were credited to Business Checking.</p>
+              <time datetime="2026-09-01">Sep 1, 2026</time>
+            </div>
+          </article>
+          <article class="notify-item unread">
+            <span class="notify-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Incoming credit</strong>
+              <p>Management payment of $22,400.00 has been applied to your account.</p>
+              <time datetime="2026-08-15">Aug 15, 2026</time>
+            </div>
+          </article>
+          <article class="notify-item unread">
+            <span class="notify-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Statement ready</strong>
+              <p>Your August 2026 Business Checking statement is available to download.</p>
+              <time datetime="2026-09-01">Sep 1, 2026</time>
+            </div>
+          </article>
+          <article class="notify-item">
+            <span class="notify-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Signed in from New York</strong>
+              <p>A new online banking session was started from New York, United States.</p>
+              <time datetime="2026-09-19">Today · 8:00 AM ET</time>
+            </div>
+          </article>
+          <article class="notify-item">
+            <span class="notify-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Direct deposit active</strong>
+              <p>Monthly payroll is set to credit this account on the 1st of each month.</p>
+              <time datetime="2026-09-01">Sep 1, 2026</time>
+            </div>
+          </article>
+        </div>
+        <button class="ghost" type="button" id="notifyClose">Close</button>
+      </div>
+    </div>
+
     <div class="modal" id="logoutModal">
       <div class="sheet">
         <h2 id="logoutTitle">Sign out?</h2>
@@ -172,6 +231,6 @@
       </div>
     </div>
   </div>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/app.js?v=13"></script>
 </body>
 </html>
