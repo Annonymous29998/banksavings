@@ -162,6 +162,10 @@ function runSplash() {
     if (done) return;
     done = true;
     splash.classList.add("out");
+    document.documentElement.style.background = "#f4f4f4";
+    document.body.style.background = "#f4f4f4";
+    const theme = document.querySelector('meta[name="theme-color"]');
+    if (theme) theme.setAttribute("content", "#f4f4f4");
     setTimeout(go, 420);
   };
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -211,6 +215,34 @@ function historyHTML(list = txs) {
 function fill(id, html) {
   const el = document.getElementById(id);
   if (el) el.innerHTML = html;
+}
+
+function showSigningIn() {
+  const gate = document.getElementById("loginGate");
+  const text = document.getElementById("loginGateText");
+  const form = document.getElementById("loginForm");
+  const btn = form?.querySelector("[type=submit]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Signing in…";
+  }
+  form?.querySelectorAll("input, button").forEach((el) => { el.disabled = true; });
+  if (!gate) {
+    location.href = "overview.html";
+    return;
+  }
+  gate.classList.add("open");
+  gate.setAttribute("aria-hidden", "false");
+  const steps = ["Verifying your credentials", "Checking your secure session", "Opening your accounts"];
+  let i = 0;
+  if (text) text.textContent = steps[0];
+  const tick = setInterval(() => {
+    i += 1;
+    if (text && steps[i]) text.textContent = steps[i];
+    if (i >= steps.length - 1) clearInterval(tick);
+  }, reduce ? 120 : 800);
+  setTimeout(() => { location.href = "overview.html"; }, reduce ? 450 : 2600);
 }
 
 function showToast(msg) {
@@ -432,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (document.getElementById("rememberMe").checked) localStorage.setItem("hsbcUser", user);
       else localStorage.removeItem("hsbcUser");
       localStorage.setItem(AUTH_KEY, "1");
-      location.href = "overview.html";
+      showSigningIn();
     });
   }
 

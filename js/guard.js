@@ -5,12 +5,17 @@
     "login.html": 1,
     "forgot.html": 1,
     "activate.html": 1,
+    "index": 1,
+    "login": 1,
+    "forgot": 1,
+    "activate": 1,
     "": 1
   };
-  var page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  var page = (location.pathname.split("/").pop() || "index.html").toLowerCase().split("?")[0];
+  if (page && page.indexOf(".") === -1) page += ".html";
 
   if (!PUBLIC[page] && localStorage.getItem(AUTH_KEY) !== "1") {
-    document.documentElement.style.visibility = "hidden";
+    document.documentElement.style.background = "#f4f4f4";
     location.replace("login.html");
   }
 

