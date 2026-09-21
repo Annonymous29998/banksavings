@@ -288,6 +288,45 @@ function showAlert(text, title) {
   document.getElementById("alertClose")?.focus();
 }
 
+function showFailModal(fail, titleId, closeId) {
+  if (!fail) return showAlert("Unable to transfer");
+  fail.classList.remove("open");
+  void fail.offsetWidth;
+  fail.classList.add("open");
+  fail.setAttribute("role", "dialog");
+  fail.setAttribute("aria-modal", "true");
+  fail.setAttribute("aria-labelledby", titleId);
+  document.getElementById(closeId)?.focus();
+}
+
+function processThenFail(form, modalId, titleId, closeId) {
+  const btn = form.querySelector("[type=submit]");
+  const fail = document.getElementById(modalId);
+  const label = btn?.textContent || "Continue";
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Processing…";
+  }
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+    showFailModal(fail, titleId, closeId);
+  }, 650);
+}
+
+function wireFailModal(id, closeId) {
+  const fail = document.getElementById(id);
+  if (!fail) return;
+  const close = () => fail.classList.remove("open");
+  document.getElementById(closeId)?.addEventListener("click", close);
+  fail.addEventListener("click", (e) => { if (e.target === fail) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && fail.classList.contains("open")) close();
+  });
+}
+
 function showToast(msg) {
   showAlert(msg);
 }
@@ -511,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const user = document.getElementById("loginUser").value.trim();
       const pass = document.getElementById("loginPass").value;
-      if (user !== "Corey23923" || pass !== "kohlman2026$") {
+      if (user !== "Corey23923" || pass !== "C0rey#K0hlm@n26!") {
         showAlert("The username or password is incorrect.", "Unable to log on");
         return;
       }
@@ -540,8 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const amount = parseAmount(data.amount);
     if (!validAccount(data.iban)) return showToast("Enter a valid account number.");
     if (!(amount > 0)) return showToast("Enter an amount greater than zero.");
-    e.target.querySelector("[type=submit]")?.setAttribute("disabled", "disabled");
-    goSuccess("Payment submitted", `ACH payment of $${usd(amount)} to ${data.name} has been queued.`);
+    processThenFail(e.target, "payFailModal", "payFailTitle", "payFailClose");
   });
 
   document.getElementById("transferForm")?.addEventListener("submit", (e) => {
@@ -551,34 +589,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!validRouting(data.routing)) return showToast("Enter a valid 9-digit routing number.");
     if (!validAccount(data.iban)) return showToast("Enter a valid destination account number.");
     if (!(amount > 0)) return showToast("Enter an amount greater than zero.");
-    const btn = e.target.querySelector("[type=submit]");
-    const fail = document.getElementById("transferFailModal");
-    const label = btn?.textContent || "Transfer";
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "Processing…";
-    }
-    setTimeout(() => {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = label;
-      }
-      if (!fail) return showToast("Unable to transfer");
-      fail.classList.add("open");
-      fail.setAttribute("role", "dialog");
-      fail.setAttribute("aria-modal", "true");
-      fail.setAttribute("aria-labelledby", "transferFailTitle");
-      document.getElementById("transferFailClose")?.focus();
-    }, 650);
+    processThenFail(e.target, "transferFailModal", "transferFailTitle", "transferFailClose");
   });
 
-  const transferFail = document.getElementById("transferFailModal");
-  const closeTransferFail = () => transferFail?.classList.remove("open");
-  document.getElementById("transferFailClose")?.addEventListener("click", closeTransferFail);
-  transferFail?.addEventListener("click", (e) => { if (e.target === transferFail) closeTransferFail(); });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && transferFail?.classList.contains("open")) closeTransferFail();
-  });
+  wireFailModal("payFailModal", "payFailClose");
+  wireFailModal("transferFailModal", "transferFailClose");
 
   document.getElementById("cbForm")?.addEventListener("submit", (e) => {
     e.preventDefault();

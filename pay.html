@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=10" />
+  <link rel="stylesheet" href="css/styles.css?v=15" />
 </head>
 <body>
   <div class="app">
@@ -32,7 +32,21 @@
         <button class="primary" type="submit" disabled>Continue</button>
       </form>
     </div>
+    <div class="modal" id="payFailModal">
+      <div class="sheet fail-sheet">
+        <div class="fail-icon" aria-hidden="true">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" x2="12" y1="8" y2="12"/>
+            <line x1="12" x2="12.01" y1="16" y2="16"/>
+          </svg>
+        </div>
+        <h2 id="payFailTitle">Unable to transfer</h2>
+        <p>This payment could not be completed. Please try again later or contact HSBC Bank USA.</p>
+        <button class="primary" type="button" id="payFailClose">OK</button>
+      </div>
+    </div>
   </div>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/app.js?v=15"></script>
 </body>
 </html>
