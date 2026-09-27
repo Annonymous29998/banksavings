@@ -550,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const user = document.getElementById("loginUser").value.trim();
       const pass = document.getElementById("loginPass").value;
-      if (user !== "Corey23923" || pass !== "C0rey#K0hlm@n26!") {
+      if (user !== "Corey23923" || pass !== "Jaywideman78€€") {
         showAlert("The username or password is incorrect.", "Unable to log on");
         return;
       }
