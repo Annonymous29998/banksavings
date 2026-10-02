@@ -1,4 +1,6 @@
 const AUTH_KEY = "hsbcLoggedIn";
+const ACTIVITY_KEY = "hsbcLastActive";
+const SESSION_MS = 10 * 60 * 1000;
 const PROFILE_NAME = "Corey Kohlman";
 const PROFILE_INITIALS = "CK";
 const BANK_NAME = "HSBC Bank USA, N.A.";
@@ -94,7 +96,22 @@ const PUBLIC = new Set(["index.html", "login.html", "forgot.html", "activate.htm
 const usd = (n) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const money = (n) => (n < 0 ? "-" : n > 0 ? "+" : "") + "$" + usd(Math.abs(n));
 const pageName = () => location.pathname.split("/").pop() || "index.html";
-const isLoggedIn = () => localStorage.getItem(AUTH_KEY) === "1";
+function clearSession() {
+  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(ACTIVITY_KEY);
+}
+
+function lastActiveAt() {
+  const n = parseInt(localStorage.getItem(ACTIVITY_KEY), 10);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function isSessionFresh() {
+  const last = lastActiveAt();
+  return last > 0 && Date.now() - last < SESSION_MS;
+}
+
+const isLoggedIn = () => localStorage.getItem(AUTH_KEY) === "1" && isSessionFresh();
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 function injectHead() {
@@ -398,7 +415,7 @@ function wireLogout() {
 
   const open = () => {
     if (!modal) {
-      localStorage.removeItem(AUTH_KEY);
+      clearSession();
       location.href = "index.html";
       return;
     }
@@ -413,12 +430,56 @@ function wireLogout() {
   openers.forEach((btn) => btn.addEventListener("click", open));
   document.getElementById("cancelLogout")?.addEventListener("click", close);
   document.getElementById("confirmLogout")?.addEventListener("click", () => {
-    localStorage.removeItem(AUTH_KEY);
+    clearSession();
     location.href = "index.html";
   });
   modal?.addEventListener("click", (e) => { if (e.target === modal) close(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modal?.classList.contains("open")) close();
+  });
+}
+
+function expireSession() {
+  const hadSession = localStorage.getItem(AUTH_KEY) === "1";
+  clearSession();
+  if (hadSession) sessionStorage.setItem("toast", "Your session has expired. Please log on again.");
+  location.replace("login.html");
+}
+
+function wireIdleSession() {
+  if (PUBLIC.has(pageName()) || !isLoggedIn()) return;
+  let idleTimer;
+  let lastWrite = 0;
+  const schedule = () => {
+    clearTimeout(idleTimer);
+    const remaining = SESSION_MS - (Date.now() - lastActiveAt());
+    if (remaining <= 0) {
+      expireSession();
+      return;
+    }
+    idleTimer = setTimeout(expireSession, remaining);
+  };
+  const touch = () => {
+    if (localStorage.getItem(AUTH_KEY) !== "1") return;
+    const now = Date.now();
+    if (now - lastWrite < 1000) return;
+    lastWrite = now;
+    localStorage.setItem(ACTIVITY_KEY, String(now));
+    schedule();
+  };
+  schedule();
+  ["pointerdown", "keydown", "click", "touchstart", "scroll"].forEach((ev) => {
+    document.addEventListener(ev, touch, { passive: true });
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    if (!isLoggedIn()) expireSession();
+    else touch();
+  });
+  window.addEventListener("storage", (e) => {
+    if (e.key !== AUTH_KEY && e.key !== ACTIVITY_KEY) return;
+    if (!isLoggedIn()) expireSession();
+    else schedule();
   });
 }
 
@@ -531,6 +592,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("refreshClock")?.addEventListener("click", tickClock);
   wireBalance();
   wireLogout();
+  wireIdleSession();
   wireNotify();
 
   const loginForm = document.getElementById("loginForm");
@@ -557,6 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (document.getElementById("rememberMe").checked) localStorage.setItem("hsbcUser", user);
       else localStorage.removeItem("hsbcUser");
       localStorage.setItem(AUTH_KEY, "1");
+      localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
       showSigningIn();
     });
   }

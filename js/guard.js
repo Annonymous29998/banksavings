@@ -1,5 +1,7 @@
 (function () {
   var AUTH_KEY = "hsbcLoggedIn";
+  var ACTIVITY_KEY = "hsbcLastActive";
+  var SESSION_MS = 10 * 60 * 1000;
   var PUBLIC = {
     "index.html": 1,
     "login.html": 1,
@@ -14,9 +16,29 @@
   var page = (location.pathname.split("/").pop() || "index.html").toLowerCase().split("?")[0];
   if (page && page.indexOf(".") === -1) page += ".html";
 
-  if (!PUBLIC[page] && localStorage.getItem(AUTH_KEY) !== "1") {
-    document.documentElement.style.background = "#f4f4f4";
-    location.replace("login.html");
+  function clearSession() {
+    localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem(ACTIVITY_KEY);
+  }
+
+  function sessionFresh() {
+    if (localStorage.getItem(AUTH_KEY) !== "1") return false;
+    var last = parseInt(localStorage.getItem(ACTIVITY_KEY), 10);
+    if (!last) return false;
+    return Date.now() - last < SESSION_MS;
+  }
+
+  if (!PUBLIC[page]) {
+    if (!sessionFresh()) {
+      if (localStorage.getItem(AUTH_KEY) === "1") {
+        try { sessionStorage.setItem("toast", "Your session has expired. Please log on again."); } catch (e) {}
+      }
+      clearSession();
+      document.documentElement.style.background = "#f4f4f4";
+      location.replace("login.html");
+    } else {
+      localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
+    }
   }
 
   document.addEventListener("contextmenu", function (e) {
