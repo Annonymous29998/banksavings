@@ -1,4 +1,5 @@
-const AUTH_KEY = "hsbcLoggedIn";
+const AUTH_KEY = "hsbcLoggedIn_v2";
+const AUTH_LEGACY_KEYS = ["hsbcLoggedIn"];
 const ACTIVITY_KEY = "hsbcLastActive";
 const SESSION_MS = 10 * 60 * 1000;
 const PROFILE_NAME = "Corey Kohlman";
@@ -98,6 +99,7 @@ const money = (n) => (n < 0 ? "-" : n > 0 ? "+" : "") + "$" + usd(Math.abs(n));
 const pageName = () => location.pathname.split("/").pop() || "index.html";
 function clearSession() {
   localStorage.removeItem(AUTH_KEY);
+  AUTH_LEGACY_KEYS.forEach((k) => localStorage.removeItem(k));
   localStorage.removeItem(ACTIVITY_KEY);
 }
 
@@ -527,6 +529,7 @@ function wireBalance() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  AUTH_LEGACY_KEYS.forEach((k) => localStorage.removeItem(k));
   const page = pageName();
   injectHead();
   injectSkip();

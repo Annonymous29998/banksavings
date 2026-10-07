@@ -1,5 +1,6 @@
 (function () {
-  var AUTH_KEY = "hsbcLoggedIn";
+  var AUTH_KEY = "hsbcLoggedIn_v2";
+  var AUTH_LEGACY_KEYS = ["hsbcLoggedIn"];
   var ACTIVITY_KEY = "hsbcLastActive";
   var SESSION_MS = 10 * 60 * 1000;
   var PUBLIC = {
@@ -18,7 +19,12 @@
 
   function clearSession() {
     localStorage.removeItem(AUTH_KEY);
+    AUTH_LEGACY_KEYS.forEach(function (k) { localStorage.removeItem(k); });
     localStorage.removeItem(ACTIVITY_KEY);
+  }
+
+  function hadLegacySession() {
+    return AUTH_LEGACY_KEYS.some(function (k) { return localStorage.getItem(k) === "1"; });
   }
 
   function sessionFresh() {
@@ -28,9 +34,15 @@
     return Date.now() - last < SESSION_MS;
   }
 
+  var stale = hadLegacySession();
+  if (stale) {
+    try { sessionStorage.setItem("toast", "Your session has expired. Please log on again."); } catch (e) {}
+    clearSession();
+  }
+
   if (!PUBLIC[page]) {
-    if (!sessionFresh()) {
-      if (localStorage.getItem(AUTH_KEY) === "1") {
+    if (stale || !sessionFresh()) {
+      if (!stale && localStorage.getItem(AUTH_KEY) === "1") {
         try { sessionStorage.setItem("toast", "Your session has expired. Please log on again."); } catch (e) {}
       }
       clearSession();
