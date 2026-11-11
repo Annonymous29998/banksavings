@@ -696,7 +696,7 @@ function injectHead() {
   if (!document.querySelector('meta[name="robots"]')) {
     const robots = document.createElement("meta");
     robots.name = "robots";
-    robots.content = "noindex, nofollow, noarchive";
+    robots.content = "noindex, nofollow, noarchive, nosnippet, noimageindex";
     document.head.appendChild(robots);
   }
 }
