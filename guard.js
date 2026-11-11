@@ -36,14 +36,20 @@
 
   var stale = hadLegacySession();
   if (stale) {
-    try { sessionStorage.setItem("toast", "Your session has expired. Please log on again."); } catch (e) {}
+    try {
+      sessionStorage.setItem("toastTitle", "Session expired");
+      sessionStorage.setItem("toast", "Your session has expired. Please log on again.");
+    } catch (e) {}
     clearSession();
   }
 
   if (!PUBLIC[page]) {
     if (stale || !sessionFresh()) {
       if (!stale && localStorage.getItem(AUTH_KEY) === "1") {
-        try { sessionStorage.setItem("toast", "Your session has expired. Please log on again."); } catch (e) {}
+        try {
+          sessionStorage.setItem("toastTitle", "Session expired");
+          sessionStorage.setItem("toast", "Your session has expired. Please log on again.");
+        } catch (e) {}
       }
       clearSession();
       document.documentElement.style.background = "#f4f4f4";

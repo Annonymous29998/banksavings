@@ -1032,7 +1032,10 @@ function wireLogout() {
 function expireSession() {
   const hadSession = localStorage.getItem(AUTH_KEY) === "1";
   clearSession();
-  if (hadSession) sessionStorage.setItem("toast", "Your session has expired. Please log on again.");
+  if (hadSession) {
+    sessionStorage.setItem("toastTitle", "Session expired");
+    sessionStorage.setItem("toast", "Your session has expired. Please log on again.");
+  }
   location.replace("login.html");
 }
 
@@ -1482,7 +1485,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const pendingToast = sessionStorage.getItem("toast");
   if (pendingToast) {
     sessionStorage.removeItem("toast");
-    showToast(pendingToast);
+    const title = sessionStorage.getItem("toastTitle") || "";
+    sessionStorage.removeItem("toastTitle");
+    showAlert(pendingToast, title || undefined);
   }
 
   wireRequiredButtons();
