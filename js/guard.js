@@ -50,6 +50,13 @@
       location.replace("login.html");
     } else {
       localStorage.setItem(ACTIVITY_KEY, String(Date.now()));
+      document.documentElement.classList.add("hsbc-boot");
+      var boot = document.createElement("style");
+      boot.textContent = "html.hsbc-boot body{visibility:hidden!important}";
+      document.documentElement.appendChild(boot);
+      setTimeout(function () {
+        document.documentElement.classList.remove("hsbc-boot");
+      }, 2500);
     }
   }
 
